@@ -7,13 +7,11 @@ no login screen.
 [日本語](./README.ja.md)
 
 ```console
-$ localsaml open myapp admin member
-✔ myapp × admin   default browser
-✔ myapp × member  default browser
+$ localsaml open myapp admin
+✔ myapp × admin  default browser
 ```
 
-Both sign-ins open in the default browser. Add `--isolated` to keep their
-sessions separate at the same time.
+The sign-in opens in the default browser.
 
 ![localsaml add -i followed by a signed-in default browser](./docs/demo.gif)
 
@@ -310,7 +308,7 @@ your own local SPs, so there is nothing to leak.
 | | |
 |---|---|
 | `localsaml add <name>` | register an SP (generates the key pair on first run) |
-| `localsaml open [sp] [user...]` | start sign-in for one or more users |
+| `localsaml open [sp] [user]` | start sign-in for one user |
 | `localsaml list` | list profile names and SP entity IDs |
 | `localsaml show <profile>` | show profile name/path, IdP settings, and certificate |
 | `localsaml edit <profile>` | open an SP profile in `$VISUAL` or `$EDITOR` |
@@ -335,7 +333,7 @@ sample     CHANGE_ME_SP_ENTITY_ID
 
 Use `show <profile>` for details and `edit <profile>` to make changes. When
 only one profile exists, its name may be omitted from `open`; with multiple
-profiles, use `open <profile> [user...]` explicitly.
+profiles, use `open <profile> [user]` explicitly.
 
 ## Limitations
 

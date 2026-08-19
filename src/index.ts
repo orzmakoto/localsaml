@@ -31,13 +31,14 @@ program
   .action((name, o) => add(name, { ...program.opts(), ...o }))
 
 program
-  .command('open [args...]')
-  .description('start a session: localsaml open [sp] [user...]')
+  .command('open [sp] [user]')
+  .allowExcessArguments(false)
+  .description('start a session for one user')
   .option('--to <path>', 'where to land after login (RelayState)')
   .option('--isolated', 'use a dedicated Chromium profile for this SP and user')
   .option('--browser <path>', 'Chromium executable (implies --isolated)')
   .option('--print', 'print the signed SAML Response instead of opening a browser')
-  .action((args, o) => open(args, { ...program.opts(), ...o }))
+  .action((sp, user, o) => open([sp, user].filter(Boolean), { ...program.opts(), ...o }))
 
 program
   .command('list')
