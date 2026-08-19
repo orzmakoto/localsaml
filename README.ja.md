@@ -216,6 +216,8 @@ attributes  →  users[名前]
 
 初回起動時に組み込みのpresetが `~/.config/localsaml/config/presets.yaml` へ書き出され、以後はそのYAMLが読み込まれます。既存ファイルは上書きされないので、属性名の変更や独自presetの追加ができます。
 
+`preset` を省略した場合の既定値は `entra` です。`init`の `sample.yaml`、非対話の `add`、対話選択の初期値にもEntra IDが使われます。
+
 属性名だけでは足りません。SPは `NameFormat` も見ていて、**一致しないと無言で無視されます**。エラーにならないので原因にたどり着きにくい典型例です。presetは両方を面倒見ます。
 
 presetはSPごとの設定なので、これを切り替えることで、本物のIdPでは答えられない問いに答えられます。**顧客がOktaからEntra IDに乗り換えても、うちのアプリは動くのか？**

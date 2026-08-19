@@ -245,6 +245,9 @@ On first startup the built-in presets are written to
 `~/.config/localsaml/config/presets.yaml`. That YAML is loaded from then on and is
 never overwritten, so you can change attribute mappings or add custom presets.
 
+The default is `entra` when `preset` is omitted. Entra ID is also selected in
+the generated `sample.yaml`, non-interactive `add`, and the interactive prompt.
+
 Attribute names are only half of it — SPs match on `NameFormat` too, and a
 mismatch is silently ignored rather than reported. Presets set both.
 

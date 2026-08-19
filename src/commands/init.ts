@@ -42,7 +42,7 @@ export async function init(opts: InitOptions): Promise<void> {
       p.sp('sample'),
       '# Starter SP profile. Edit the URLs and users for your application.\n' +
         stringify({
-          preset: 'generic',
+          preset: 'entra',
           idp: idpSettings(home),
           sp: {
             entityId: SP_ENTITY_ID_PLACEHOLDER,

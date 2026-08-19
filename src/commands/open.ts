@@ -41,7 +41,7 @@ export async function open(args: string[], opts: OpenOptions): Promise<void> {
   if (!targets.length) fail(`No user given and ${spName} has no defaultUser`)
 
   const presets = loadPresets(home)
-  const preset = presets[sp.preset ?? 'generic']
+  const preset = presets[sp.preset ?? 'entra']
   if (!preset) fail(`Unknown preset "${sp.preset}". Known: ${Object.keys(presets).join(', ')}`)
 
   const key = readFileSync(sp.idp?.privateKeyFile ?? p.key, 'utf8')

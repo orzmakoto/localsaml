@@ -49,9 +49,9 @@ export async function add(name: string, opts: AddOptions): Promise<void> {
     ? await select({
         message: 'Attribute preset (which IdP should we imitate?)',
         choices: Object.keys(presets).map((v) => ({ name: v, value: v })),
-        default: 'generic',
+        default: 'entra',
       })
-    : 'generic')
+    : 'entra')
 
   const def: SpDef = {
     name,
