@@ -5,12 +5,11 @@
 [English](./README.md)
 
 ```console
-$ localsaml open myapp admin member
-✔ myapp × admin   default browser
-✔ myapp × member  default browser
+$ localsaml open myapp admin
+✔ myapp × admin  default browser
 ```
 
-標準ブラウザで2回ログインが開きます。セッションを分けて同時に保持する場合は `--isolated` を使います。
+標準ブラウザでログインが開きます。
 
 ![localsaml add -i から標準ブラウザでのログインまで](./docs/demo.gif)
 
@@ -270,7 +269,7 @@ $ cd ~/repos/localsaml-config && git init
 | | |
 |---|---|
 | `localsaml add <name>` | SPを登録する（初回は鍵と証明書も生成） |
-| `localsaml open [sp] [user...]` | 1人または複数ユーザのログインを開始 |
+| `localsaml open [sp] [user]` | 1ユーザのログインを開始 |
 | `localsaml list` | プロファイル名とSP Entity IDを一覧表示 |
 | `localsaml show <profile>` | プロファイル名・パス、IdP情報、証明書を表示 |
 | `localsaml edit <profile>` | `$VISUAL` または `$EDITOR` でSPプロファイルを開く |
@@ -290,7 +289,7 @@ localtest  http://localhost:4000/saml/metadata
 sample     CHANGE_ME_SP_ENTITY_ID
 ```
 
-詳細は `show <profile>`、編集は `edit <profile>` を使います。プロファイルが1つだけなら `open` でSP名を省略できます。複数ある場合は `open <profile> [user...]` のように明示します。
+詳細は `show <profile>`、編集は `edit <profile>` を使います。プロファイルが1つだけなら `open` でSP名を省略できます。複数ある場合は `open <profile> [user]` のように明示します。
 
 ## 制約
 

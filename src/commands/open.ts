@@ -37,8 +37,9 @@ export async function open(args: string[], opts: OpenOptions): Promise<void> {
 
   const sp = loadSp(home, spName)
   const requested = (explicitSp ? args.slice(1) : args).filter(Boolean)
-  const targets = requested.length ? requested : sp.defaultUser ? [sp.defaultUser] : []
-  if (!targets.length) fail(`No user given and ${spName} has no defaultUser`)
+  if (requested.length > 1) fail('Open accepts only one user at a time')
+  const userName = requested[0] ?? sp.defaultUser
+  if (!userName) fail(`No user given and ${spName} has no defaultUser`)
 
   const presets = loadPresets(home)
   const preset = presets[sp.preset ?? 'entra']
@@ -49,7 +50,6 @@ export async function open(args: string[], opts: OpenOptions): Promise<void> {
   const idpEntityId =
     sp.idp?.entityId ?? loadRoot(home).idp?.entityId ?? DEFAULT_IDP_ENTITY_ID
 
-  const pending: Promise<void>[] = []
   const isolated = !!(
     opts.isolated ||
     opts.browser ||
@@ -58,50 +58,45 @@ export async function open(args: string[], opts: OpenOptions): Promise<void> {
     sp.browser?.ignoreCertErrors
   )
 
-  for (const userName of targets) {
-    const user = composeUser(sp, userName)
-    const xml = buildSignedResponse({
-      idpEntityId,
-      spEntityId: sp.sp.entityId,
-      acsUrl: sp.sp.acsUrl,
-      nameId: nameIdOf(user, userName),
-      nameIdFormat: user.nameIdFormat ?? sp.nameIdFormat ?? NAMEID_FORMAT_EMAIL,
-      attributes: toWireAttributes(user, preset),
-      sign: sp.sign ?? 'assertion',
-      key,
-      cert,
-    })
+  const user = composeUser(sp, userName)
+  const xml = buildSignedResponse({
+    idpEntityId,
+    spEntityId: sp.sp.entityId,
+    acsUrl: sp.sp.acsUrl,
+    nameId: nameIdOf(user, userName),
+    nameIdFormat: user.nameIdFormat ?? sp.nameIdFormat ?? NAMEID_FORMAT_EMAIL,
+    attributes: toWireAttributes(user, preset),
+    sign: sp.sign ?? 'assertion',
+    key,
+    cert,
+  })
 
-    if (opts.print) {
-      console.log(xml)
-      continue
-    }
-
-    const { url, done } = await serveOnce({
-      acsUrl: sp.sp.acsUrl,
-      samlResponse: encodeResponse(xml),
-      relayState: opts.to ?? user.to ?? sp.sp.startUrl,
-      label: `${spName} × ${userName}`,
-    })
-    pending.push(done)
-
-    launch({
-      url,
-      isolated,
-      profile: isolated ? profileDir(spName, userName) : undefined,
-      command: opts.browser ?? sp.browser?.command,
-      ignoreCertErrors: sp.browser?.ignoreCertErrors ?? false,
-    })
-    ok(
-      isolated
-        ? `${bold(`${spName} × ${userName}`)} ${dim(`profile: ${profileDir(spName, userName)}`)}`
-        : `${bold(`${spName} × ${userName}`)} ${dim('default browser')}`,
-    )
+  if (opts.print) {
+    console.log(xml)
+    return
   }
 
-  if (opts.print) return
+  const { url, done } = await serveOnce({
+    acsUrl: sp.sp.acsUrl,
+    samlResponse: encodeResponse(xml),
+    relayState: opts.to ?? user.to ?? sp.sp.startUrl,
+    label: `${spName} × ${userName}`,
+  })
 
-  await Promise.all(pending)
+  launch({
+    url,
+    isolated,
+    profile: isolated ? profileDir(spName, userName) : undefined,
+    command: opts.browser ?? sp.browser?.command,
+    ignoreCertErrors: sp.browser?.ignoreCertErrors ?? false,
+  })
+  ok(
+    isolated
+      ? `${bold(`${spName} × ${userName}`)} ${dim(`profile: ${profileDir(spName, userName)}`)}`
+      : `${bold(`${spName} × ${userName}`)} ${dim('default browser')}`,
+  )
+
+  await done
 
   if (isolated && sp.sp.acsUrl.startsWith('https://') && !sp.browser?.ignoreCertErrors) {
     console.log()
