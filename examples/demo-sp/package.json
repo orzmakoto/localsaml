@@ -5,7 +5,7 @@
   "description": "A minimal SAML service provider, for trying localsaml out.",
   "scripts": { "start": "node server.mjs" },
   "dependencies": {
-    "@xmldom/xmldom": "^0.9.6",
+    "@xmldom/xmldom": "^0.9.12",
     "xml-crypto": "^6.0.0",
     "xpath": "^0.0.34"
   }
